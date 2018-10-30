@@ -20,6 +20,8 @@
     * Upon 'Game Over' a scoreboard model will slide down listing the player's previous score. A 'Play Again' button will be included on this modal.
 
 
+
+
   * Technologies employed
     *  Vanilla JavaScript for game logic.
     *  HTML5 Canvas for rendering.
@@ -30,7 +32,7 @@
     *  gem_match.js main structure of the canvas and center of game logic.
     *  board.js responsible for rendering the board.
     *  player.js receives input and outputs reaction and position.
-      
+
 
 
   * MVPs
