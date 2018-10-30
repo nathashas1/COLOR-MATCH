@@ -30,7 +30,7 @@
     *  gem_match.js main structure of the canvas and center of game logic.
     *  board.js responsible for rendering the board.
     *  player.js receives input and outputs reaction and position.
-      scorebaord.jsx fetches scores and displays them in a <ul></ul>.
+      
 
 
   * MVPs
