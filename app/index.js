@@ -127,7 +127,7 @@ document.getElementById("canvas").addEventListener("click", (e) => {
       while (true) {
         console.log("x2-i", bx2-i);
         console.log("count", count);
-        if ((bx2-i === -1) || (balls[bx2-i][by2].color !== balls[bx1][by1].color)) {
+        if ((bx2-i === -1) || (bx2-i === bx1) || (balls[bx2-i][by2].color !== balls[bx1][by1].color)) {
             break;
           }
         if (balls[bx2-i][by2].color === balls[bx1][by1].color) {
@@ -139,7 +139,7 @@ document.getElementById("canvas").addEventListener("click", (e) => {
       while(true){
         console.log("x2+i", bx2+i);
         console.log("count", count);
-        if ((bx2+i === 10) || (balls[bx2+i][by2].color !== balls[bx1][by1].color)) {
+        if ((bx2+i === 10) || (bx2+i === bx1) || (balls[bx2+i][by2].color !== balls[bx1][by1].color)) {
           console.log("going to break");
           break;
         }
@@ -168,7 +168,7 @@ document.getElementById("canvas").addEventListener("click", (e) => {
     while (true) {
       console.log("y2-j", by2-j);
       console.log("count", ycount);
-      if ((by2-j === -1) || (balls[bx2][by2-j].color !== balls[bx1][by1].color)) {
+      if ((by2-j === -1) || (by2-j === by1) || (balls[bx2][by2-j].color !== balls[bx1][by1].color)) {
           break;
         }
       if (balls[bx2][by2-j].color === balls[bx1][by1].color) {
@@ -180,7 +180,7 @@ document.getElementById("canvas").addEventListener("click", (e) => {
     while(true){
       console.log("y2+j", by2+j);
       console.log("count", count);
-      if ((by2+j === 10) || (balls[bx2][by2+j].color !== balls[bx1][by1].color)) {
+      if ((by2+j === 10) || (by2+j === by1) || (balls[bx2][by2+j].color !== balls[bx1][by1].color)) {
         console.log("going to break");
         break;
       }
