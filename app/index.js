@@ -103,7 +103,6 @@ document.getElementById("canvas").addEventListener("click", (e) => {
     if (adjacent) {
       console.log("true adjacent", x1,y1,x2,y2);
       swap(x1,y1,x2,y2);
-      paint();
     }
     x1 = -1;
     y1 = -1;
@@ -120,8 +119,6 @@ document.getElementById("canvas").addEventListener("click", (e) => {
   function swap(bx1,by1,bx2,by2) {
     //check in x coordinate
     let flag = true;
-    let flag1 = true;
-    let flag2 = true;
     let count = 0;
     let i = 1;
     while (flag){
@@ -159,6 +156,49 @@ document.getElementById("canvas").addEventListener("click", (e) => {
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
   }
+  paint();
+
+  //check in y coordinate
+  let yflag = true;
+  let ycount = 0;
+  let j = 1;
+  while (yflag){
+    console.log("x1, y1", bx1, by1);
+    console.log("x2, y2", bx2, by2);
+    while (true) {
+      console.log("y2-j", by2-j);
+      console.log("count", ycount);
+      if ((by2-j === -1) || (balls[bx2][by2-j].color !== balls[bx1][by1].color)) {
+          break;
+        }
+      if (balls[bx2][by2-j].color === balls[bx1][by1].color) {
+        ycount += 1;
+        j+=1;
+      }
+    }
+    j = 1;
+    while(true){
+      console.log("y2+j", by2+j);
+      console.log("count", count);
+      if ((by2+j === 10) || (balls[bx2][by2+j].color !== balls[bx1][by1].color)) {
+        console.log("going to break");
+        break;
+      }
+      if (balls[bx2][by2+j].color === balls[bx1][by1].color) {
+        ycount += 1;
+        j+=1;
+      }
+    }
+    yflag = false;
+}
+console.log("count", ycount);
+if (ycount >= 2){
+  let temp = balls[bx1][by1];
+  balls[bx1][by1] = balls[bx2][by2];
+  balls[bx2][by2] = temp;
+}
+paint();
+
   }
 
 });
