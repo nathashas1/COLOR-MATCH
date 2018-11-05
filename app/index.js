@@ -66,6 +66,33 @@ function checkColor(x, y, c) {
   return flag;
 }
 
+
+
+function replacecheckColor(x, y, c) {
+  let flag =true;
+
+  if(x > 1) {
+    let c0 = balls[x-1][y].color;
+
+      if (c0 === c) {
+        flag = false;
+      }
+    }
+
+
+
+  if(y > 1) {
+    let c0 = balls[x][y-1].color;
+    if (c0 === c) {
+      flag = false;
+    }
+  }
+  return flag;
+}
+
+
+let score = 0;
+
 let match = [];
 function paint() {
   for (let x = 0; x < 10; x++) {
@@ -79,7 +106,7 @@ function paint() {
         console.log("color",balls[x][y].color);
         while (true) {
           var colorNum = Math.floor(Math.random() * 6);
-          if (checkColor(x, y, colorNum)) {
+          if (replacecheckColor(x, y, colorNum)) {
             balls[x][y].color = colorNum;
             break;
           }
@@ -89,7 +116,7 @@ function paint() {
 
 
       ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
-  
+
 
 
   }
@@ -97,7 +124,7 @@ function paint() {
   ctx.font = 'bold 20px open Sans';
   ctx.textAlign = 'center';
   ctx.fillText('Moves Left : 10', 150, 50);
-  ctx.fillText('Score : 33333', 450, 50);
+  ctx.fillText(score, 450, 50);
 }
 
 initialize();
@@ -174,6 +201,7 @@ document.getElementById("canvas").addEventListener("click", (e) => {
     let temp = balls[bx1][by1];
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
+      score += 100;
   }
 
   let n = 0;
@@ -224,6 +252,7 @@ if (ycount >= 2){
   let temp = balls[bx1][by1];
   balls[bx1][by1] = balls[bx2][by2];
   balls[bx2][by2] = temp;
+  score += 100;
 }
 let m = 0;
 while (m < match.length) {
