@@ -1,4 +1,6 @@
-
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("The script is loaded");
+})
 
 window.addEventListener("load", () => {
     console.log("At the beginning");
