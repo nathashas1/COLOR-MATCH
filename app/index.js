@@ -1,6 +1,7 @@
 
 
 window.addEventListener("load", () => {
+    console.log("At the beginning");
 
 var ctx, balls = [];
 var orange = document.getElementById("orange");
@@ -267,5 +268,7 @@ paint();
 
 
   }
+    
+  console.log("At the end");
 
 });
