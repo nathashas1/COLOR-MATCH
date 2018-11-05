@@ -66,14 +66,34 @@ function checkColor(x, y, c) {
   return flag;
 }
 
+let match = [];
 function paint() {
   for (let x = 0; x < 10; x++) {
     for (let y = 0; y < 10; y++) {
       // drawImage(image, x, y, width, height)
-      ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
 
-    }
+
+      if (balls[x][y] === undefined) {
+
+        balls[x][y] = new Ball(x,y);
+        console.log("color",balls[x][y].color);
+        while (true) {
+          var colorNum = Math.floor(Math.random() * 6);
+          if (checkColor(x, y, colorNum)) {
+            balls[x][y].color = colorNum;
+            break;
+          }
+        }
+      }
+
+
+
+      ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
+  
+
+
   }
+}
   ctx.font = 'bold 20px open Sans';
   ctx.textAlign = 'center';
   ctx.fillText('Moves Left : 10', 150, 50);
@@ -118,86 +138,104 @@ document.getElementById("canvas").addEventListener("click", (e) => {
 
   function swap(bx1,by1,bx2,by2) {
     //check in x coordinate
+    match = [];
     let flag = true;
     let count = 0;
     let i = 1;
     while (flag){
-      console.log("x1, y1", bx1, by1);
-      console.log("x2, y2", bx2, by2);
       while (true) {
-        console.log("x2-i", bx2-i);
-        console.log("count", count);
         if ((bx2-i === -1) || (bx2-i === bx1) || (balls[bx2-i][by2].color !== balls[bx1][by1].color)) {
             break;
           }
         if (balls[bx2-i][by2].color === balls[bx1][by1].color) {
           count += 1;
+          match.push([bx2-i,by2]);
           i+=1;
         }
       }
       i = 1;
       while(true){
-        console.log("x2+i", bx2+i);
-        console.log("count", count);
         if ((bx2+i === 10) || (bx2+i === bx1) || (balls[bx2+i][by2].color !== balls[bx1][by1].color)) {
-          console.log("going to break");
           break;
         }
         if (balls[bx2+i][by2].color === balls[bx1][by1].color) {
           count += 1;
+          match.push([bx2+i,by2]);
           i+=1;
         }
       }
       flag = false;
   }
-  console.log("count", count);
+  if (match.length >= 2) {
+   match.push([bx2,by2]) ;
+  }
   if (count >= 2){
+
     let temp = balls[bx1][by1];
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
   }
-  paint();
 
+  let n = 0;
+
+  while (n < match.length) {
+    delete balls[match[n][0]][match[n][1]];
+    n+=1 ;
+  }
+
+  paint();
+  if (match.length < 3) {
+    match = [];
+  }
   //check in y coordinate
   let yflag = true;
   let ycount = 0;
   let j = 1;
   while (yflag){
-    console.log("x1, y1", bx1, by1);
-    console.log("x2, y2", bx2, by2);
     while (true) {
-      console.log("y2-j", by2-j);
-      console.log("count", ycount);
       if ((by2-j === -1) || (by2-j === by1) || (balls[bx2][by2-j].color !== balls[bx1][by1].color)) {
           break;
         }
       if (balls[bx2][by2-j].color === balls[bx1][by1].color) {
         ycount += 1;
+         match.push([bx2,by2-j]);
         j+=1;
       }
     }
+
     j = 1;
     while(true){
-      console.log("y2+j", by2+j);
-      console.log("count", count);
       if ((by2+j === 10) || (by2+j === by1) || (balls[bx2][by2+j].color !== balls[bx1][by1].color)) {
-        console.log("going to break");
         break;
       }
       if (balls[bx2][by2+j].color === balls[bx1][by1].color) {
         ycount += 1;
+        match.push([bx2,by2+j]);
         j+=1;
       }
     }
     yflag = false;
 }
-console.log("count", ycount);
+
+if (match.length >= 2) {
+ match.push([bx2,by2]);
+}
 if (ycount >= 2){
   let temp = balls[bx1][by1];
   balls[bx1][by1] = balls[bx2][by2];
   balls[bx2][by2] = temp;
 }
+let m = 0;
+while (m < match.length) {
+  delete balls[match[m][0]][match[m][1]];
+  m+=1 ;
+}
+
+
+
 paint();
+
+
 
   }
 
