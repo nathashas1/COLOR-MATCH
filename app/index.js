@@ -1,5 +1,12 @@
+<<<<<<< HEAD
+=======
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("The script is loaded");
+})
+>>>>>>> cfe2cda557191258ce40496492a11308b3398d59
 
 window.addEventListener("load", () => {
+    console.log("At the beginning");
 
   var ctx, balls = [];
   var orange = document.getElementById("orange");
@@ -244,7 +251,6 @@ window.addEventListener("load", () => {
   paint();
 
 
-
-    }
+}
 
 });
