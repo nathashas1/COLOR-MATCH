@@ -1,12 +1,9 @@
-<<<<<<< HEAD
-=======
+
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("The script is loaded");
-})
->>>>>>> cfe2cda557191258ce40496492a11308b3398d59
+});
+
 
 window.addEventListener("load", () => {
-    console.log("At the beginning");
 
   var ctx, balls = [];
   var orange = document.getElementById("orange");
@@ -70,48 +67,186 @@ window.addEventListener("load", () => {
 
 
 
-  function replacecheckColor(x, y, c) {
-    let flag =true;
-
-    if(x > 1) {
-      let c0 = balls[x-1][y].color;
-
-        if (c0 === c) {
-          flag = false;
-        }
-      }
-    if(y > 1) {
-      let c0 = balls[x][y-1].color;
-      if (c0 === c) {
-        flag = false;
-      }
-    }
-    return flag;
-  }
+  // function replacecheckColor(x, y, c) {
+  //   let flag =true;
+  //
+  //   if(x > 1) {
+  //     let c0 = balls[x-1][y].color;
+  //
+  //       if (c0 === c) {
+  //         flag = false;
+  //       }
+  //     }
+  //   if(y > 1) {
+  //     let c0 = balls[x][y-1].color;
+  //     if (c0 === c) {
+  //       flag = false;
+  //     }
+  //   }
+  //   return flag;
+  // }
 
   let score = 0;
+  // function realpaint() {
+  //   for (let x = 0; x < 10; x++) {
+  //     for (let y = 0; y < 10; y++) {
+  //       // drawImage(image, x, y, width, height)
+  //
+  //       if (balls[x][y] === undefined) {
+  //         balls[x][y] = new Ball(x,y);
+  //         while (true) {
+  //           var colorNum = Math.floor(Math.random() * 6);
+  //           if (checkColor(x, y, colorNum)) {
+  //             balls[x][y].color = colorNum;
+  //             break;
+  //           }
+  //         }
+  //
+  //       }
+  //       ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
+  //     }
+  //   }
+  //   ctx.font = 'bold 20px open Sans';
+  //   ctx.textAlign = 'center';
+  //   ctx.fillText('Moves Left : 10', 150, 50);
+  //   ctx.clearRect(400, 0, 100, 100);
+  //   ctx.fillText(score, 450, 50);
+  // }
+
   function paint() {
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 10; y++) {
+
         // drawImage(image, x, y, width, height)
 
-        if (balls[x][y] === undefined) {
-          balls[x][y] = new Ball(x,y);
-          while (true) {
-            var colorNum = Math.floor(Math.random() * 6);
-            if (replacecheckColor(x, y, colorNum)) {
-              balls[x][y].color = colorNum;
-              break;
+        for (let j = 0; j < 10; j++) {
+          for (let k = 9; k > 0; k--) {
+
+            if (balls[j][k] === undefined) {
+              balls[j][k] = balls[j][k-1];
+              balls[j][k-1] = undefined;
             }
           }
         }
+
+        for (let x = 0; x < 10; x++) {
+          for (let y = 0; y < 10; y++) {
+
+            if (balls[x][y] === undefined) {
+              balls[x][y] = new Ball(x,y);
+              while (true) {
+                var colorNum = Math.floor(Math.random() * 6);
+                if (checkColor(x, y, colorNum)) {
+                  balls[x][y].color = colorNum;
+                  break;
+                }
+              }
+            }
+          }
+        }
+
+        for (let x = 0; x < 10; x++) {
+          for (let y = 0; y < 10; y++) {
+
         ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
       }
     }
     ctx.font = 'bold 20px open Sans';
     ctx.textAlign = 'center';
     ctx.fillText('Moves Left : 10', 150, 50);
+    ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
+   }
+
+  function checkStatus(){
+    for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < 10; y++) {
+        match = [];
+        let flag = true;
+        let count = 0;
+        let i = 1;
+        while (flag){
+          while (true) {
+            if ((x-i === -1) || (balls[x-i][y].color !== balls[x][y].color)) {
+              break;
+            }
+            if (balls[x-i][y].color === balls[x][y].color) {
+              count += 1;
+              match.push([x-i,y]);
+              i+=1;
+            }
+           }
+          i = 1;
+          while(true){
+            if ((x+i === 10) || (balls[x+i][y].color !== balls[x][y].color)) {
+              break;
+            }
+            if (balls[x+i][y].color === balls[x][y].color) {
+              count += 1;
+              match.push([x+i,y]);
+              i+=1;
+            }
+          }
+          flag = false;
+      }
+
+
+
+      let n = 0;
+
+      while (n < match.length && match.length > 2) {
+        delete balls[match[n][0]][match[n][1]];
+        n+=1 ;
+      }
+
+      paint();
+      if (match.length < 3) {
+        match = [];
+      }
+      //check in y coordinate
+      let yflag = true;
+      let ycount = 0;
+      let j = 1;
+      while (yflag){
+        while (true) {
+          if ((y-j === -1)  || (balls[x][y-j].color !== balls[x][y].color)) {
+              break;
+            }
+          if (balls[x][y-j].color === balls[x][y].color) {
+            ycount += 1;
+             match.push([x,y-j]);
+            j+=1;
+          }
+        }
+
+        j = 1;
+        while(true){
+          if ((y+j === 10) || (balls[x][y+j].color !== balls[x][y].color)) {
+            break;
+          }
+          if (balls[x][y+j].color === balls[x][y].color) {
+            ycount += 1;
+            match.push([x,y+j]);
+            j+=1;
+          }
+        }
+        yflag = false;
+    }
+
+    if (match.length >= 2) {
+     match.push([x,y]);
+    }
+
+    let m = 0;
+    while (m < match.length) {
+      delete balls[match[m][0]][match[m][1]];
+      m+=1 ;
+    }
+
+
+
+    paint();
+
+      }
+    }
   }
 
   initialize();
