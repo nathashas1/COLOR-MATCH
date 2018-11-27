@@ -113,7 +113,7 @@ window.addEventListener("load", () => {
   //   ctx.fillText(score, 450, 50);
   // }
 
-  function paint() {
+  function paint(deletedCount) {
 
         // drawImage(image, x, y, width, height)
 
@@ -121,17 +121,30 @@ window.addEventListener("load", () => {
           for (let k = 9; k > 0; k--) {
 
             if (balls[j][k] === undefined) {
-              balls[j][k] = balls[j][k-1];
-              balls[j][k-1] = undefined;
+      
+              let tempStore = balls[j][k-deletedCount];
+              balls[j][k] = tempStore;
+              balls[j][k-deletedCount] = undefined;
             }
           }
         }
+
 
         for (let x = 0; x < 10; x++) {
           for (let y = 0; y < 10; y++) {
 
             if (balls[x][y] === undefined) {
+
               balls[x][y] = new Ball(x,y);
+
+            }
+          }
+        }
+
+
+        for (let x = 0; x < 10; x++) {
+          for (let y = 0; y < 10; y++) {
+            if (balls[x][y].color === undefined) {
               while (true) {
                 var colorNum = Math.floor(Math.random() * 6);
                 if (checkColor(x, y, colorNum)) {
@@ -142,112 +155,113 @@ window.addEventListener("load", () => {
             }
           }
         }
-
         for (let x = 0; x < 10; x++) {
           for (let y = 0; y < 10; y++) {
+            ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
+          }
+        }
 
-        ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
-      }
-    }
+
     ctx.font = 'bold 20px open Sans';
     ctx.textAlign = 'center';
     ctx.fillText('Moves Left : 10', 150, 50);
     ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
+    console.log("all balls", balls);
    }
 
-  function checkStatus(){
-    for (let x = 0; x < 10; x++) {
-      for (let y = 0; y < 10; y++) {
-        match = [];
-        let flag = true;
-        let count = 0;
-        let i = 1;
-        while (flag){
-          while (true) {
-            if ((x-i === -1) || (balls[x-i][y].color !== balls[x][y].color)) {
-              break;
-            }
-            if (balls[x-i][y].color === balls[x][y].color) {
-              count += 1;
-              match.push([x-i,y]);
-              i+=1;
-            }
-           }
-          i = 1;
-          while(true){
-            if ((x+i === 10) || (balls[x+i][y].color !== balls[x][y].color)) {
-              break;
-            }
-            if (balls[x+i][y].color === balls[x][y].color) {
-              count += 1;
-              match.push([x+i,y]);
-              i+=1;
-            }
-          }
-          flag = false;
-      }
-
-
-
-      let n = 0;
-
-      while (n < match.length && match.length > 2) {
-        delete balls[match[n][0]][match[n][1]];
-        n+=1 ;
-      }
-
-      paint();
-      if (match.length < 3) {
-        match = [];
-      }
-      //check in y coordinate
-      let yflag = true;
-      let ycount = 0;
-      let j = 1;
-      while (yflag){
-        while (true) {
-          if ((y-j === -1)  || (balls[x][y-j].color !== balls[x][y].color)) {
-              break;
-            }
-          if (balls[x][y-j].color === balls[x][y].color) {
-            ycount += 1;
-             match.push([x,y-j]);
-            j+=1;
-          }
-        }
-
-        j = 1;
-        while(true){
-          if ((y+j === 10) || (balls[x][y+j].color !== balls[x][y].color)) {
-            break;
-          }
-          if (balls[x][y+j].color === balls[x][y].color) {
-            ycount += 1;
-            match.push([x,y+j]);
-            j+=1;
-          }
-        }
-        yflag = false;
-    }
-
-    if (match.length >= 2) {
-     match.push([x,y]);
-    }
-
-    let m = 0;
-    while (m < match.length) {
-      delete balls[match[m][0]][match[m][1]];
-      m+=1 ;
-    }
-
-
-
-    paint();
-
-      }
-    }
-  }
+  // function checkStatus(){
+  //   for (let x = 0; x < 10; x++) {
+  //     for (let y = 0; y < 10; y++) {
+  //       match = [];
+  //       let flag = true;
+  //       let count = 0;
+  //       let i = 1;
+  //       while (flag){
+  //         while (true) {
+  //           if ((x-i === -1) || (balls[x-i][y].color !== balls[x][y].color)) {
+  //             break;
+  //           }
+  //           if (balls[x-i][y].color === balls[x][y].color) {
+  //             count += 1;
+  //             match.push([x-i,y]);
+  //             i+=1;
+  //           }
+  //          }
+  //         i = 1;
+  //         while(true){
+  //           if ((x+i === 10) || (balls[x+i][y].color !== balls[x][y].color)) {
+  //             break;
+  //           }
+  //           if (balls[x+i][y].color === balls[x][y].color) {
+  //             count += 1;
+  //             match.push([x+i,y]);
+  //             i+=1;
+  //           }
+  //         }
+  //         flag = false;
+  //     }
+  //
+  //
+  //
+  //     let n = 0;
+  //
+  //     while (n < match.length && match.length > 2) {
+  //       delete balls[match[n][0]][match[n][1]];
+  //       n+=1 ;
+  //     }
+  //
+  //     paint();
+  //     if (match.length < 3) {
+  //       match = [];
+  //     }
+  //     //check in y coordinate
+  //     let yflag = true;
+  //     let ycount = 0;
+  //     let j = 1;
+  //     while (yflag){
+  //       while (true) {
+  //         if ((y-j === -1)  || (balls[x][y-j].color !== balls[x][y].color)) {
+  //             break;
+  //           }
+  //         if (balls[x][y-j].color === balls[x][y].color) {
+  //           ycount += 1;
+  //            match.push([x,y-j]);
+  //           j+=1;
+  //         }
+  //       }
+  //
+  //       j = 1;
+  //       while(true){
+  //         if ((y+j === 10) || (balls[x][y+j].color !== balls[x][y].color)) {
+  //           break;
+  //         }
+  //         if (balls[x][y+j].color === balls[x][y].color) {
+  //           ycount += 1;
+  //           match.push([x,y+j]);
+  //           j+=1;
+  //         }
+  //       }
+  //       yflag = false;
+  //   }
+  //
+  //   if (match.length >= 2) {
+  //    match.push([x,y]);
+  //   }
+  //
+  //   let m = 0;
+  //   while (m < match.length) {
+  //     delete balls[match[m][0]][match[m][1]];
+  //     m+=1 ;
+  //   }
+  //
+  //
+  //
+  //   paint();
+  //
+  //     }
+  //   }
+  // }
 
   initialize();
 
@@ -263,10 +277,12 @@ window.addEventListener("load", () => {
     if (x1 === -1) {
       x1 = Math.floor(e.offsetX/60);
       y1 = Math.floor(e.offsetY/60)-2;
+      console.log(balls[x1][y1]);
       color1 = balls[x1][y1].color;
     } else {
       x2 = Math.floor(e.offsetX/60);
       y2 = Math.floor(e.offsetY/60)-2;
+      console.log(balls[x1][y1]);
       color2 = balls[x2][y2].color;
       let adjacent = checkAdjacent();
       if (adjacent) {
@@ -324,18 +340,22 @@ window.addEventListener("load", () => {
       balls[bx2][by2] = temp;
         score += 100;
     }
-
     let n = 0;
+
+    let deletedCountx = 0;
 
     while (n < match.length) {
       delete balls[match[n][0]][match[n][1]];
+
       n+=1 ;
     }
 
-    paint();
-    if (match.length < 3) {
+
+    paint(1);
+
+
       match = [];
-    }
+
     //check in y coordinate
     let yflag = true;
     let ycount = 0;
@@ -376,14 +396,18 @@ window.addEventListener("load", () => {
     score += 100;
   }
   let m = 0;
+  console.log("match", match);
+  let deletedCounty = match.length;
+
   while (m < match.length) {
     delete balls[match[m][0]][match[m][1]];
+
     m+=1 ;
   }
 
 
 
-  paint();
+  paint(deletedCounty);
 
 
 }
