@@ -40,6 +40,13 @@ window.addEventListener("load", () => {
     hide();
   });
 
+ var music1 = document.getElementById("myAudio1");
+ var music2 = document.getElementById("myAudio2");
+ var music3 = document.getElementById("myAudio3");
+
+ function playAudio(music) {
+   music.play();
+}
   const restartbutton = document.querySelector(".unhide");
   restartbutton.addEventListener("click", unhide);
 
@@ -156,7 +163,7 @@ window.addEventListener("load", () => {
           for (let k = 9; k > 0; k--) {
 
             if (balls[j][k] === undefined) {
-
+                // playAudio(music2);
               let tempStore = balls[j][k-deletedCount];
               balls[j][k] = tempStore;
               balls[j][k-deletedCount] = undefined;
@@ -169,7 +176,7 @@ window.addEventListener("load", () => {
           for (let y = 0; y < 10; y++) {
 
             if (balls[x][y] === undefined) {
-
+                // playAudio(music2);
               balls[x][y] = new Ball(x,y);
 
             }
@@ -223,6 +230,7 @@ window.addEventListener("load", () => {
         match = [];
         let callpaintx = false;
             if (balls[x][y].color === balls[x][y+1].color && balls[x][y].color === balls[x][y+2].color) {
+
               match.push([x,y]);
               match.push([x,y+1]);
               match.push([x,y+2]);
@@ -230,6 +238,7 @@ window.addEventListener("load", () => {
 
             let n = 0;
             while (n < match.length && match.length > 2) {
+                playAudio(music3);
               delete balls[match[n][0]][match[n][1]];
               n+=1 ;
               callpaintx = true;
@@ -252,7 +261,7 @@ window.addEventListener("load", () => {
                  }
                  let n = 0;
                  while (n < match.length && match.length > 2) {
-
+                     playAudio(music3);
                    delete balls[match[n][0]][match[n][1]];
                    callpainty = true;
                    n+=1 ;
@@ -291,15 +300,23 @@ window.addEventListener("load", () => {
   // document.getElementById("canvas").addEventListener("click", clickHandler);
   window.myClickHandler = clickHandler;
   function clickHandler(e) {
+    playAudio(music1);
+
+
+
     if (x1 === -1) {
+
       x1 = Math.floor(e.offsetX/60);
       y1 = Math.floor(e.offsetY/60)-2;
       color1 = balls[x1][y1].color;
     } else {
+
       x2 = Math.floor(e.offsetX/60);
       y2 = Math.floor(e.offsetY/60)-2;
       color2 = balls[x2][y2].color;
+
       let adjacent = checkAdjacent();
+
       if (adjacent) {
         swap(x1,y1,x2,y2);
       }
@@ -424,6 +441,7 @@ window.addEventListener("load", () => {
     let paintflagx = false;
     while (n < match.length && match.length > 2) {
       delete balls[match[n][0]][match[n][1]];
+        playAudio(music3);
       paintflagx = true;
       n+=1 ;
     }
@@ -534,6 +552,7 @@ window.addEventListener("load", () => {
   let deletedCounty = match.length;
   let paintflagy = false;
   while (m < match.length && match.length > 2) {
+    playAudio(music3);
     delete balls[match[m][0]][match[m][1]];
     paintflagy = true;
     m+=1 ;
