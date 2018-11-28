@@ -156,7 +156,7 @@ window.addEventListener("load", () => {
           for (let k = 9; k > 0; k--) {
 
             if (balls[j][k] === undefined) {
-              console.log("in undefined");
+
               let tempStore = balls[j][k-deletedCount];
               balls[j][k] = tempStore;
               balls[j][k-deletedCount] = undefined;
@@ -205,7 +205,7 @@ window.addEventListener("load", () => {
     ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
 
-    if (score > 300){
+    if (score > 400){
       document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
       ctx.font = "60pt Calibri";
         ctx.fillText("You won!", 300, 400);
@@ -405,13 +405,13 @@ window.addEventListener("load", () => {
       if(!match.includes([bx2,by2])) {
             match.push([bx2,by2]);
         }
-        console.log("match", match);
+
      // match.push([bx2,by2]) ;
      yflag = false;
    }
 
     if (match.length > 2){
-      console.log("xmatch", match);
+
       let temp = balls[bx1][by1];
       balls[bx1][by1] = balls[bx2][by2];
       balls[bx2][by2] = temp;
@@ -522,7 +522,7 @@ window.addEventListener("load", () => {
   }
 
   if (match.length > 2){
-    console.log("ymatch", match);
+
     let temp = balls[bx1][by1];
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
