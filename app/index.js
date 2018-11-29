@@ -178,54 +178,56 @@ window.addEventListener("load", () => {
               match.push([x,y]);
               match.push([x,y+1]);
               match.push([x,y+2]);
+              removeBalls(match,3);
             }
 
-          let n = 0;
-          while (n < match.length && match.length > 2) {
-            playAudio(music3);
-            delete balls[match[n][0]][match[n][1]];
-            n+=1 ;
-            callpaintx = true;
-          }
-            if (callpaintx){
-              score += 30;
-              paint(3);
-            }
+          // let n = 0;
+          // while (n < match.length && match.length > 2) {
+          //   playAudio(music3);
+          //   delete balls[match[n][0]][match[n][1]];
+          //   n+=1 ;
+          //   callpaintx = true;
+          // }
+          //   if (callpaintx){
+          //     score += 30;
+          //     paint(3);
+          //   }
           }
         }
 
-         for (let y = 0; y < 10; y++) {
-           for (let x = 0; x < 8; x++) {
-             match = [];
-             let callpainty = false;
-                 if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
-                   match.push([x,y]);
-                   match.push([x+1,y]);
-                   match.push([x+2,y]);
-                 }
-                 let n = 0;
-                 while (n < match.length && match.length > 2) {
-                   playAudio(music3);
-                   delete balls[match[n][0]][match[n][1]];
-                   callpainty = true;
-                   n+=1 ;
-                 }
-                 if (callpainty) {
-                   score += 30;
-                   paint(1);
-                 }
-               }
-             }
-             if (moves === 0 && score <= 390){
-               document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-               ctx.font = "60pt Calibri";
-               ctx.fillText("Game Over!", 300, 400);
-             }
-          }
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 8; x++) {
+        match = [];
+        let callpainty = false;
+        if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
+          match.push([x,y]);
+          match.push([x+1,y]);
+          match.push([x+2,y]);
+          removeBalls(match,1);
+        }
+        // let n = 0;
+        // while (n < match.length && match.length > 2) {
+        //   playAudio(music3);
+        //   delete balls[match[n][0]][match[n][1]];
+        //   callpainty = true;
+        //   n+=1 ;
+        // }
+        //   if (callpainty) {
+        //     score += 30;
+        //     paint(1);
+        //   }
+        }
+      }
+    if (moves === 0 && score <= 390){
+      document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+      ctx.font = "60pt Calibri";
+      ctx.fillText("Game Over!", 300, 400);
+    }
+  }
 
     window.setInterval(function(){
       checkStatus();
-    }, 1000);
+    }, 1200);
 
 
   initialize();
@@ -269,75 +271,77 @@ window.addEventListener("load", () => {
 
     function swap(bx1,by1,bx2,by2) {
       //check in x coordinate
-      match = [];
-      let flag = true;
+      let matchRow = [];
       let yflag = true;
-      let count = 0;
       let i = 1;
-
-
-      while (flag){
-        while (true) {
-          if ((bx2-i === -1) || (bx2-i === bx1) || (balls[bx2-i][by2].color !== balls[bx1][by1].color)) {
-            break;
-          }
-
-          if (balls[bx2-i][by2].color === balls[bx1][by1].color) {
-            count += 1;
-            match.push([bx2-i,by2]);
-            i+=1;
-          }
+      while (true) {
+        if ((bx2-i === -1) || (bx2-i === bx1) || (balls[bx2-i][by2].color !== balls[bx1][by1].color)) {
+          break;
         }
-        i = 1;
-        while(true){
-
-          if ((bx2+i === 10) || (bx2+i === bx1) || (balls[bx2+i][by2].color !== balls[bx1][by1].color)) {
-            break;
-          }
-          if (balls[bx2+i][by2].color === balls[bx1][by1].color) {
-            count += 1;
-            match.push([bx2+i,by2]);
-            i+=1;
-          }
+        if (balls[bx2-i][by2].color === balls[bx1][by1].color) {
+          matchRow.push([bx2-i,by2]);
+          i+=1;
         }
-        flag = false;
-    }
-
-    if (match.length >= 2) {
-      if(!match.includes([bx2,by2])) {
-            match.push([bx2,by2]);
+      }
+      i = 1;
+      while(true){
+        if ((bx2+i === 10) || (bx2+i === bx1) || (balls[bx2+i][by2].color !== balls[bx1][by1].color)) {
+          break;
         }
-     yflag = false;
-    }
+        if (balls[bx2+i][by2].color === balls[bx1][by1].color) {
+          matchRow.push([bx2+i,by2]);
+          i+=1;
+        }
+      }
 
-    if (match.length > 2){
+
+    // if (match.length >= 2) {
+    //   if(!match.includes([bx2,by2])) {
+    //         match.push([bx2,by2]);
+    //     }
+    //  yflag = false;
+    // }
+
+    if (matchRow.length >= 2){
+      if(!matchRow.includes([bx2,by2])) {
+        matchRow.push([bx2,by2]);
+      }
       let temp = balls[bx1][by1];
       balls[bx1][by1] = balls[bx2][by2];
       balls[bx2][by2] = temp;
-      score += match.length*10;
+
       moves -= 1;
+      yflag = false;
+      paint();
+      console.log("xmatch", matchRow);
+
+          // removeBalls(match,1);
+        setTimeout(function () {
+          removeBalls(matchRow,1);
+        }, 200);
+      // removeBalls(match, 1);
     }
 
-    let n = 0;
-    let deletedCountx = 0;
-    let paintflagx = false;
+    // let n = 0;
+    // let deletedCountx = 0;
+    // let paintflagx = false;
+    //
+    // while (n < match.length && match.length > 2) {
+    //   delete balls[match[n][0]][match[n][1]];
+    //   playAudio(music3);
+    //   paintflagx = true;
+    //   n+=1 ;
+    // }
+    //
+    // if (paintflagx) {
+    //   paint(1);
+    // }
 
-    while (n < match.length && match.length > 2) {
-      delete balls[match[n][0]][match[n][1]];
-      playAudio(music3);
-      paintflagx = true;
-      n+=1 ;
-    }
+      let matchColumn = [];
 
-    if (paintflagx) {
-      paint(1);
-    }
-
-      match = [];
 
     //check in y coordinate
     // let yflag = true;
-    let ycount = 0;
     let j = 1;
     while (yflag){
       while (true) {
@@ -346,54 +350,73 @@ window.addEventListener("load", () => {
             break;
         }
         if (balls[bx2][by2-j].color === balls[bx1][by1].color) {
-          ycount += 1;
-          match.push([bx2,by2-j]);
+          matchColumn.push([bx2,by2-j]);
           j+=1;
         }
       }
 
       j = 1;
-
       while(true){
         if ((by2+j === 10) || (by2+j === by1) || (balls[bx2][by2+j].color !== balls[bx1][by1].color)) {
           break;
         }
         if (balls[bx2][by2+j].color === balls[bx1][by1].color) {
-          ycount += 1;
-          match.push([bx2,by2+j]);
+          matchColumn.push([bx2,by2+j]);
           j+=1;
         }
       }
       yflag = false;
     }
 
-  if (match.length >= 2) {
-   match.push([bx2,by2]);
-  }
+  // if (match.length >= 2) {
+  //  match.push([bx2,by2]);
+  // }
 
-  if (match.length > 2){
+  if (matchColumn.length >= 2){
+    if(!matchColumn.includes([bx2,by2])) {
+      matchColumn.push([bx2,by2]);
+    }
     let temp = balls[bx1][by1];
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
-    score += match.length*10;
     moves -= 1;
-  }
-  let m = 0;
+    paint();
 
-  let deletedCounty = match.length;
-  let paintflagy = false;
-  while (m < match.length && match.length > 2) {
-    playAudio(music3);
-    delete balls[match[m][0]][match[m][1]];
-    paintflagy = true;
-    m+=1 ;
+    setTimeout(function () {
+    removeBalls(matchColumn, matchColumn.length);
+  }, 200);
+  // removeBalls(match, match.length);
   }
 
-
-  if (paintflagy){
-    paint(deletedCounty);
-  }
+  // let m = 0;
+  // let deletedCounty = match.length;
+  // let paintflagy = false;
+  // while (m < match.length && match.length > 2) {
+  //   playAudio(music3);
+  //   delete balls[match[m][0]][match[m][1]];
+  //   paintflagy = true;
+  //   m+=1 ;
+  // }
+  //
+  //
+  // if (paintflagy){
+  //   paint(deletedCounty);
+  // }
 
 }
+
+  function removeBalls(array, slideCount){
+    console.log("xarray",array);
+    let i = 0;
+    while (i < array.length) {
+      playAudio(music3);
+      delete balls[array[i][0]][array[i][1]];
+      i+=1 ;
+    }
+
+      score += array.length*10;
+    paint(slideCount);
+
+  }
 
 });
