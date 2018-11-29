@@ -161,7 +161,7 @@ window.addEventListener("load", () => {
     ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
 
-    if (score > 400){
+    if (score > 390){
       document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
       ctx.font = "60pt Calibri";
       ctx.fillText("You won!", 300, 400);
