@@ -51,8 +51,8 @@ window.addEventListener("load", () => {
   const restartbutton = document.querySelector(".unhide");
   restartbutton.addEventListener("click", unhide);
 
-  let score = 0;
-  let moves = 10;
+  let score;
+  let moves;
   function initialize(){
     //Create ball Objects
 
@@ -166,12 +166,7 @@ window.addEventListener("load", () => {
       ctx.font = "60pt Calibri";
       ctx.fillText("You won!", 300, 400);
     }
-    else if (moves === 0 && score < 400){
-      document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-      ctx.font = "60pt Calibri";
-      ctx.fillText("Game Over!", 300, 400);
-    }
-   }
+  }
 
 
   function checkStatus(){
@@ -220,6 +215,11 @@ window.addEventListener("load", () => {
                    paint(1);
                  }
                }
+             }
+             if (moves === 0 && score <= 390){
+               document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+               ctx.font = "60pt Calibri";
+               ctx.fillText("Game Over!", 300, 400);
              }
           }
 
