@@ -204,7 +204,7 @@ window.addEventListener("load", () => {
 
   window.setInterval(function(){
     checkStatus();
-  }, 1100);
+  }, 1000);
 
 
   initialize();
