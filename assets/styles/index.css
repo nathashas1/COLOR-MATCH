@@ -33,7 +33,7 @@ html {
   background-color: #e6ffff88;
   justify-content: center;
   text-align: center;
-  transition: left 400ms linear, opacity 400ms linear;
+  transition: left 300ms linear, opacity 300ms linear;
   display: flex;
 
 }
