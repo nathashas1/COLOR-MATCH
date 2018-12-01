@@ -21,8 +21,8 @@ window.addEventListener("load", () => {
     const overlay = document.querySelector(".overlay-container");
     overlay.style.left = "100vw";
     overlay.style.opacity = 0;
-    // const main = document.querySelector(".maincontainer");
-    //   main.style.width = "100%";
+    const main = document.querySelector(".maincontainer");
+    main.style.width = "100%";
   }
 
   function unhide() {
@@ -36,13 +36,22 @@ window.addEventListener("load", () => {
   window.unhide = unhide;
 
   const button = document.querySelector(".start");
-  button.addEventListener("click", ()=> {
+    button.addEventListener("click", ()=> {
     hide();
   });
+
+
 
  var music1 = document.getElementById("myAudio1");
  var music2 = document.getElementById("myAudio2");
  var music3 = document.getElementById("myAudio3");
+ var video = document.getElementById("myVideo");
+
+ const button2 = document.querySelector(".startvideo");
+  button2.addEventListener("click", ()=> {
+  video.play();
+    // button2.style.display = 'none';
+ });
 
  function playAudio(music) {
    music.play();

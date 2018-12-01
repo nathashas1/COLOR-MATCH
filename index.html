@@ -32,12 +32,15 @@
   </audio>
 
 
+
+
   <main class="maincontainer">
     <canvas id="canvas" width="600" height="700"></canvas>
     <button class="unhide"> Restart game</button>
 
   </main>
   <section class="overlay-container">
+    <div>
     <h1 class="h1">INSTRUCTIONS
     </h1>
     <h4 class="h4"> Try to bring 3 gems of same color in a row or column.<br/>
@@ -48,6 +51,14 @@
     </h4>
 
     <button class="start"> START GAME</button>
+    </div>
+    <div class="videocontainer">
+    <video id="myVideo" width="300" controls>
+      <source src="./assets/sounds/vid10.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+      <button class="startvideo"> HOW TO PLAY </button>
+    </div>
   </section>
 
     <img id="orange" src="./assets/images/ball/orange.png" style="display: none;">
