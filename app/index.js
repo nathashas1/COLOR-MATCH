@@ -166,6 +166,7 @@ window.addEventListener("load", () => {
     ctx.textAlign = 'center';
     ctx.clearRect(200, 0, 300, 100);
     ctx.fillStyle = 'rgba(0,0,0,1)';
+    ctx.clearRect(0, 0, 300, 100);
     ctx.fillText('Moves Left :' , 150, 50);
     ctx.fillText(moves, 220, 50);
     ctx.clearRect(400, 0, 100, 100);
@@ -212,9 +213,9 @@ window.addEventListener("load", () => {
     }
   }
 
-  window.setInterval(function(){
-    checkStatus();
-  }, 1000);
+  // window.setInterval(function(){
+  //   checkStatus();
+  // }, 1000);
 
 
   initialize();
@@ -384,11 +385,13 @@ function removeBalls(array, slideCount){
     ctx.clearRect(array[i][0]*60, 100 + (array[i][1]*60), 60,60);
     i+=1 ;
   }
-  setTimeout(function(){
+  setTimeout(async function(){
     score += array.length*10;
     paint(slideCount);
-  }, 1000);
+    await sleep(500)
+    checkStatus()
 
+  }, 1000);
 
   }
 
