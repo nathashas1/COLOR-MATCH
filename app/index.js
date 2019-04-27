@@ -12,6 +12,7 @@ window.addEventListener("load", () => {
   var green = document.getElementById("green");
   var grey = document.getElementById("grey");
   var purple = document.getElementById("purple");
+  var goldCircle = document.getElementById("gold");
   var imageList = [orange, red, blue, green, grey, purple];
 
   function Ball(x,y) {
@@ -50,7 +51,6 @@ window.addEventListener("load", () => {
  const button2 = document.querySelector(".startvideo");
   button2.addEventListener("click", ()=> {
   video.play();
-    // button2.style.display = 'none';
  });
 
  function playAudio(music) {
@@ -159,12 +159,14 @@ window.addEventListener("load", () => {
     // drawImage(image, x, y, width, height)
         for (let x = 0; x < 10; x++) {
           for (let y = 0; y < 10; y++) {
+            console.log("ctx",ctx);
             ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
           }
         }
     ctx.font = 'bold 20px open Sans';
     ctx.textAlign = 'center';
     ctx.clearRect(200, 0, 300, 100);
+    ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillText('Moves Left :' , 150, 50);
     ctx.fillText(moves, 220, 50);
     ctx.clearRect(400, 0, 100, 100);
@@ -228,13 +230,33 @@ window.addEventListener("load", () => {
 
   window.myClickHandler = clickHandler;
 
-  function clickHandler(e) {
+  function addBackground(x,y) {
+    ctx.fillStyle = 'rgba(0,255,0,1)';
+    ctx.fillRect(x*60, 100 + (y*60), 60,60);
+    ctx.drawImage(goldCircle, x*60, 100 + (y*60), 60,60);
+  }
+
+
+  function clearBackground(cx1,cy1,cx2,cy2) {
+    ctx.clearRect(cx1*60, 100 + (cy1*60), 60,60);
+    ctx.clearRect(cx2*60, 100 + (cy2*60), 60,60);
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function clickHandler(e) {
+    debugger
     playAudio(music1);
     if (x1 === -1) {
       x1 = Math.floor(e.offsetX/60);
       y1 = Math.floor(e.offsetY/60)-2;
-      color1 = balls[x1][y1].color;
+      color1 = balls[x1][y1].color;;
+      addBackground(x1,y1);
+      paint();
     } else {
+      debugger
       x2 = Math.floor(e.offsetX/60);
       y2 = Math.floor(e.offsetY/60)-2;
       color2 = balls[x2][y2].color;
@@ -242,6 +264,10 @@ window.addEventListener("load", () => {
 
       if (adjacent) {
         swap(x1,y1,x2,y2);
+      } else {
+        clearBackground(x1,y1,x2,y2);
+        paint();
+        alert("Please select adjacent balls");
       }
       x1 = -1;
       y1 = -1;
@@ -256,6 +282,7 @@ window.addEventListener("load", () => {
   }
 
     function swap(bx1,by1,bx2,by2) {
+      let canSwap = false;
       //check in x coordinate
       let matchRow = [];
       let yflag = true;
@@ -281,6 +308,7 @@ window.addEventListener("load", () => {
       }
 
       if (matchRow.length >= 2){
+        canSwap = true;
         if(!matchRow.includes([bx2,by2])) {
           matchRow.push([bx2,by2]);
         }
@@ -289,10 +317,11 @@ window.addEventListener("load", () => {
         balls[bx2][by2] = temp;
         moves -= 1;
         yflag = false;
+        clearBackground(x1,y1,x2,y2);
         paint();
         setTimeout(function () {
           removeBalls(matchRow,1);
-        }, 200);
+        }, 1000);
       }
 
     //check in y coordinate
@@ -323,6 +352,7 @@ window.addEventListener("load", () => {
     }
 
   if (matchColumn.length >= 2){
+    canSwap = true;
     if(!matchColumn.includes([bx2,by2])) {
       matchColumn.push([bx2,by2]);
     }
@@ -330,22 +360,37 @@ window.addEventListener("load", () => {
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
     moves -= 1;
+    clearBackground(x1,y1,x2,y2);
     paint();
     setTimeout(function () {
       removeBalls(matchColumn, matchColumn.length);
-    }, 200);
+    }, 800);
+  }
+  if (canSwap == false) {
+    alert("Cant be swapped.Please bring 3 same color balls together by swapping");
+    clearBackground(x1,y1,x2,y2);
+    paint();
+  } else {
+      addBackground(x2,y2)
+      paint()
   }
 }
 
 function removeBalls(array, slideCount){
+  debugger
   let i = 0;
   while (i < array.length) {
     playAudio(music3);
     delete balls[array[i][0]][array[i][1]];
+    ctx.clearRect(array[i][0]*60, 100 + (array[i][1]*60), 60,60);
     i+=1 ;
   }
-  score += array.length*10;
-  paint(slideCount);
+  setTimeout(function(){
+    score += array.length*10;
+    paint(slideCount);
+  }, 1000);
+
+
   }
 
 });
