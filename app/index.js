@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
   var green = document.getElementById("green");
   var grey = document.getElementById("grey");
   var purple = document.getElementById("purple");
-  var goldCircle = document.getElementById("gold");
+  var circle = document.getElementById("circle");
   var imageList = [orange, red, blue, green, grey, purple];
 
   function Ball(x,y) {
@@ -232,7 +232,7 @@ window.addEventListener("load", () => {
   function addBackground(x,y) {
     ctx.fillStyle = 'rgba(0,255,0,1)';
     ctx.fillRect(x*60, 100 + (y*60), 60,60);
-    ctx.drawImage(goldCircle, x*60, 100 + (y*60), 60,60);
+    ctx.drawImage(circle, x*60, 100 + (y*60), 60,60);
   }
 
 
