@@ -159,7 +159,6 @@ window.addEventListener("load", () => {
     // drawImage(image, x, y, width, height)
         for (let x = 0; x < 10; x++) {
           for (let y = 0; y < 10; y++) {
-            console.log("ctx",ctx);
             ctx.drawImage(imageList[balls[x][y].color], x*60, y*60+100, 60, 60);
           }
         }
