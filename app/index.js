@@ -13,6 +13,7 @@ window.addEventListener("load", () => {
   var grey = document.getElementById("grey");
   var purple = document.getElementById("purple");
   var circle = document.getElementById("circle");
+  var rectangle = document.getElementById("rectangle");
   var imageList = [orange, red, blue, green, grey, purple];
 
   function Ball(x,y) {
@@ -46,6 +47,8 @@ window.addEventListener("load", () => {
  var music1 = document.getElementById("myAudio1");
  var music2 = document.getElementById("myAudio2");
  var music3 = document.getElementById("myAudio3");
+ var music4 = document.getElementById("myAudio4");
+ var music5 = document.getElementById("myAudio5");
  var video = document.getElementById("myVideo");
 
  const button2 = document.querySelector(".startvideo");
@@ -180,7 +183,8 @@ window.addEventListener("load", () => {
   }
 
 
-  function checkStatus(){
+  async function checkStatus(){
+    debugger
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 8; y++) {
         match = [];
@@ -231,11 +235,14 @@ window.addEventListener("load", () => {
   window.myClickHandler = clickHandler;
 
   function addBackground(x,y) {
-    ctx.fillStyle = 'rgba(0,255,0,1)';
-    ctx.fillRect(x*60, 100 + (y*60), 60,60);
+    // ctx.fillStyle = 'rgba(0,255,0,1)';
+    // ctx.fillRect(x*60, 100 + (y*60), 60,60);
     ctx.drawImage(circle, x*60, 100 + (y*60), 60,60);
   }
 
+  function hitJackpot(x,y) {
+    ctx.drawImage(rectangle, x*60, 100 + (y*60), 60,60);
+  }
 
   function clearBackground(cx1,cy1,cx2,cy2) {
     ctx.clearRect(cx1*60, 100 + (cy1*60), 60,60);
@@ -244,6 +251,16 @@ window.addEventListener("load", () => {
 
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function displayHit(array){
+    debugger
+    for (let i = 0; i < array.length; i++) {
+      xpos = array[i][0]
+      ypos = array[i][1]
+      hitJackpot(xpos,ypos)
+      paint()
+    }
   }
 
   async function clickHandler(e) {
@@ -281,7 +298,8 @@ window.addEventListener("load", () => {
       return false;
   }
 
-    function swap(bx1,by1,bx2,by2) {
+    async function swap(bx1,by1,bx2,by2) {
+      debugger
       let canSwap = false;
       //check in x coordinate
       let matchRow = [];
@@ -319,9 +337,10 @@ window.addEventListener("load", () => {
         yflag = false;
         clearBackground(x1,y1,x2,y2);
         paint();
-        setTimeout(function () {
-          removeBalls(matchRow,1);
-        }, 1000);
+        addBackground(x2,y2)
+        paint()
+        await sleep(300)
+        removeBalls(matchRow,1);
       }
 
     //check in y coordinate
@@ -362,37 +381,36 @@ window.addEventListener("load", () => {
     moves -= 1;
     clearBackground(x1,y1,x2,y2);
     paint();
-    setTimeout(function () {
-      removeBalls(matchColumn, matchColumn.length);
-    }, 800);
+    addBackground(x2,y2)
+    paint()
+    await sleep(300)
+    removeBalls(matchColumn, matchColumn.length);
   }
   if (canSwap == false) {
     alert("Cant be swapped.Please bring 3 same color balls together by swapping");
     clearBackground(x1,y1,x2,y2);
     paint();
-  } else {
-      addBackground(x2,y2)
-      paint()
   }
 }
 
-function removeBalls(array, slideCount){
-  debugger
+async function removeBalls(array, slideCount){
+  displayHit(array)
+  playAudio(music5)
+  await sleep(1100)
   let i = 0;
+
   while (i < array.length) {
     playAudio(music3);
     delete balls[array[i][0]][array[i][1]];
     ctx.clearRect(array[i][0]*60, 100 + (array[i][1]*60), 60,60);
     i+=1 ;
   }
-  setTimeout(async function(){
+    await sleep(500)
     score += array.length*10;
     paint(slideCount);
+    playAudio(music4)
     await sleep(500)
     checkStatus()
-
-  }, 1000);
-
   }
 
 });
