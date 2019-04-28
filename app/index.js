@@ -215,7 +215,7 @@ window.addEventListener("load", () => {
 
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 8; x++) {
-        match = [];
+        // match = [];
         let callpainty = false;
         if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
           match.push([x,y]);
@@ -256,9 +256,8 @@ window.addEventListener("load", () => {
   window.myClickHandler = clickHandler;
 
   function addBackground(x,y) {
-    // ctx.fillStyle = 'rgba(0,255,0,1)';
-    // ctx.fillRect(x*60, 100 + (y*60), 60,60);
     ctx.drawImage(circle, x*60, 100 + (y*60), 60,60);
+    paint();
   }
 
   function hitJackpot(x,y) {
@@ -268,6 +267,7 @@ window.addEventListener("load", () => {
   function clearBackground(cx1,cy1,cx2,cy2) {
     ctx.clearRect(cx1*60, 100 + (cy1*60), 60,60);
     ctx.clearRect(cx2*60, 100 + (cy2*60), 60,60);
+    paint()
   }
 
   function sleep(ms) {
@@ -309,21 +309,19 @@ window.addEventListener("load", () => {
       y1 = Math.floor(e.offsetY/60)-2;
       color1 = balls[x1][y1].color;;
       addBackground(x1,y1);
-      paint();
     } else {
       debugger
       x2 = Math.floor(e.offsetX/60);
       y2 = Math.floor(e.offsetY/60)-2;
       color2 = balls[x2][y2].color;
       let adjacent = checkAdjacent();
-
       if (adjacent) {
         swap(x1,y1,x2,y2,swapTurn);
       } else {
         clearBackground(x1,y1,x2,y2);
-        paint();
         alert("Please select adjacent balls");
       }
+
       x1 = -1;
       y1 = -1;
     }
@@ -374,11 +372,10 @@ window.addEventListener("load", () => {
         moves -= 1;
         yflag = false;
         clearBackground(x1,y1,x2,y2);
-        paint();
         addBackground(x2,y2)
-        paint()
-        await sleep(300)
-        removeBalls(matchRow,1);
+        await sleep(400)
+        checkStatus()
+        // removeBalls(matchRow,1);
       }
 
     //check in y coordinate
@@ -418,25 +415,22 @@ window.addEventListener("load", () => {
     balls[bx2][by2] = temp;
     moves -= 1;
     clearBackground(x1,y1,x2,y2);
-    paint();
     addBackground(x2,y2)
-    paint()
-    await sleep(300)
-    removeBalls(matchColumn, matchColumn.length);
+    await sleep(400)
+    checkStatus()
+    // removeBalls(matchColumn, matchColumn.length);
   }
   if (canSwap === false && turn === 1) {
     swap(x2,y2,x1,y1,2)
-    clearBackground(x2,y2,x1,y1);
-    paint();
   } else if (canSwap === false && turn === 2){
     alert("Cant be swapped.Please bring 3 same color balls together by swapping");
     clearBackground(x1,y1,x2,y2);
-    paint();
   }
-
 }
 
 async function removeBalls(array, slideCount){
+  console.log("array",array)
+  clearBackground(x2,y2,x1,y1);
   displayHit(array)
   playAudio(music5)
   await sleep(1100)
@@ -448,7 +442,7 @@ async function removeBalls(array, slideCount){
     ctx.clearRect(array[i][0]*60, 100 + (array[i][1]*60), 60,60);
     i+=1 ;
   }
-    await sleep(500)
+    await sleep(600)
     score += array.length*10;
     paint(slideCount);
     playAudio(music4)
