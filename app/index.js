@@ -95,6 +95,8 @@ window.addEventListener("load", () => {
     ctx.clearRect(0, 0, 600, 600);
     paint();
     document.getElementById("canvas").addEventListener("click", clickHandler);
+    // document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
+    // document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
   }
 
 
@@ -175,16 +177,28 @@ window.addEventListener("load", () => {
     ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
 
+    // if (score > 390){
+    //   document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+    //   ctx.font = "60pt Calibri";
+    //   ctx.fillText("You won!", 300, 400);
+    // }
+  }
+
+  function win(){
     if (score > 390){
       document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
       ctx.font = "60pt Calibri";
       ctx.fillText("You won!", 300, 400);
+    } else if (moves === 0 && score <= 390){
+        document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+        ctx.font = "60pt Calibri";
+        ctx.fillText("Game Over!", 300, 400);
     }
   }
 
-
   async function checkStatus(){
     debugger
+    let winChance = false
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 8; y++) {
         match = [];
@@ -194,6 +208,7 @@ window.addEventListener("load", () => {
               match.push([x,y+1]);
               match.push([x,y+2]);
               removeBalls(match,3);
+              winChance = true
             }
           }
         }
@@ -207,14 +222,18 @@ window.addEventListener("load", () => {
           match.push([x+1,y]);
           match.push([x+2,y]);
           removeBalls(match,1);
+          winChance = true
         }
         }
       }
-    if (moves === 0 && score <= 390){
-      document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-      ctx.font = "60pt Calibri";
-      ctx.fillText("Game Over!", 300, 400);
+    if (winChance === false) {
+      win()
     }
+    // if (moves === 0 && score <= 390){
+    //   document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+    //   ctx.font = "60pt Calibri";
+    //   ctx.fillText("Game Over!", 300, 400);
+    // }
   }
 
   // window.setInterval(function(){
@@ -231,6 +250,8 @@ window.addEventListener("load", () => {
   let y2 = -1;
   let color1 = -1;
   let color2 = -1 ;
+  let swapTurn;
+
 
   window.myClickHandler = clickHandler;
 
@@ -262,8 +283,25 @@ window.addEventListener("load", () => {
       paint()
     }
   }
+  //
+  // function dragStart(e){
+  //   console.log("in drag start",e)
+  //   if (x1 === -1) {
+  //     x1 = Math.floor(e.offsetX/60);
+  //     y1 = Math.floor(e.offsetY/60)-2;
+  //     color1 = balls[x1][y1].color;;
+  //     addBackground(x1,y1);
+  //     paint();
+  //   }
+  //   console.log("x1")
+  // }
+  //
+  // function dragEnd(e){
+  //   console.log("in drag end",e)
+  // }
 
   async function clickHandler(e) {
+    swapTurn = 1
     debugger
     playAudio(music1);
     if (x1 === -1) {
@@ -280,7 +318,7 @@ window.addEventListener("load", () => {
       let adjacent = checkAdjacent();
 
       if (adjacent) {
-        swap(x1,y1,x2,y2);
+        swap(x1,y1,x2,y2,swapTurn);
       } else {
         clearBackground(x1,y1,x2,y2);
         paint();
@@ -298,7 +336,7 @@ window.addEventListener("load", () => {
       return false;
   }
 
-    async function swap(bx1,by1,bx2,by2) {
+    async function swap(bx1,by1,bx2,by2,turn) {
       debugger
       let canSwap = false;
       //check in x coordinate
@@ -386,11 +424,16 @@ window.addEventListener("load", () => {
     await sleep(300)
     removeBalls(matchColumn, matchColumn.length);
   }
-  if (canSwap == false) {
+  if (canSwap === false && turn === 1) {
+    swap(x2,y2,x1,y1,2)
+    clearBackground(x2,y2,x1,y1);
+    paint();
+  } else if (canSwap === false && turn === 2){
     alert("Cant be swapped.Please bring 3 same color balls together by swapping");
     clearBackground(x1,y1,x2,y2);
     paint();
   }
+
 }
 
 async function removeBalls(array, slideCount){
