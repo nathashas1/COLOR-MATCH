@@ -176,12 +176,6 @@ window.addEventListener("load", () => {
     ctx.fillText(moves, 220, 50);
     ctx.clearRect(400, 0, 100, 100);
     ctx.fillText(score, 450, 50);
-
-    // if (score > 390){
-    //   document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-    //   ctx.font = "60pt Calibri";
-    //   ctx.fillText("You won!", 300, 400);
-    // }
   }
 
   function win(){
@@ -229,17 +223,7 @@ window.addEventListener("load", () => {
     if (winChance === false) {
       win()
     }
-    // if (moves === 0 && score <= 390){
-    //   document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-    //   ctx.font = "60pt Calibri";
-    //   ctx.fillText("Game Over!", 300, 400);
-    // }
   }
-
-  // window.setInterval(function(){
-  //   checkStatus();
-  // }, 1000);
-
 
   initialize();
 
@@ -429,7 +413,6 @@ window.addEventListener("load", () => {
 }
 
 async function removeBalls(array, slideCount){
-  console.log("array",array)
   clearBackground(x2,y2,x1,y1);
   displayHit(array)
   playAudio(music5)
