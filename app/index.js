@@ -192,6 +192,7 @@ window.addEventListener("load", () => {
 
   async function checkStatus(){
     debugger
+    document.getElementById("canvas").addEventListener("click", clickHandler);
     let winChance = false
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 8; y++) {
@@ -413,6 +414,7 @@ window.addEventListener("load", () => {
 }
 
 async function removeBalls(array, slideCount){
+  document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
   clearBackground(x2,y2,x1,y1);
   displayHit(array)
   playAudio(music5)
