@@ -15,6 +15,7 @@ window.addEventListener("load", () => {
   var circle = document.getElementById("circle");
   var rectangle = document.getElementById("rectangle");
   var imageList = [orange, red, blue, green, grey, purple];
+  var gameOver = false
 
   function Ball(x,y) {
   }
@@ -33,6 +34,7 @@ window.addEventListener("load", () => {
     overlay.style.opacity = 1;
     const main = document.querySelector(".maincontainer");
     main.style.width = "100%";
+    gameOver = false
     initialize();
   }
   window.unhide = unhide;
@@ -49,6 +51,8 @@ window.addEventListener("load", () => {
  var music3 = document.getElementById("myAudio3");
  var music4 = document.getElementById("myAudio4");
  var music5 = document.getElementById("myAudio5");
+ var music6 = document.getElementById("myAudio6");
+ var music7 = document.getElementById("myAudio7");
  var video = document.getElementById("myVideo");
 
  const button2 = document.querySelector(".startvideo");
@@ -92,11 +96,12 @@ window.addEventListener("load", () => {
     // initialize canvas
     var canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 600, 600);
+    ctx.clearRect(0, 0, 600, 700);
     paint();
-    document.getElementById("canvas").addEventListener("click", clickHandler);
-    // document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
-    // document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
+    // document.getElementById("canvas").addEventListener("click", clickHandler);
+    document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
+    document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
+    document.getElementById("canvas").addEventListener("mousemove", mousemove,false);
   }
 
 
@@ -124,6 +129,7 @@ window.addEventListener("load", () => {
 
   function paint(deletedCount) {
         // drawImage(image, x, y, width, height)
+    if (gameOver === true) return
     for (let j = 0; j < 10; j++) {
       for (let k = 9; k > 0; k--) {
         // replace deleted balls with balls from top
@@ -180,47 +186,88 @@ window.addEventListener("load", () => {
 
   function win(){
     if (score > 390){
-      document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+        document.getElementById("canvas").removeEventListener("mousedown", window.myDragStart);
+        document.getElementById("canvas").removeEventListener("mouseup", window.myDragEnd);
       ctx.font = "60pt Calibri";
       ctx.fillText("You won!", 300, 400);
+      gameOver = true
     } else if (moves === 0 && score <= 390){
-        document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
+          document.getElementById("canvas").removeEventListener("mousedown", window.myDragStart);
+          document.getElementById("canvas").removeEventListener("mouseup", window.myDragEnd);
         ctx.font = "60pt Calibri";
         ctx.fillText("Game Over!", 300, 400);
+        gameOver = true
     }
   }
 
+  function findUnique(array){
+      let set = new Set()
+      let uniqueArray = []
+      let i = 0
+      let flagX = false
+      let flagY = false
+        if (array[i][0] === array[i+1][0]) {
+          flagX = true
+        } else {
+          flagY = true
+        }
+      if (flagX === true) {
+        for (let i = 0; i < array.length; i++) {
+          if (!(set.has(array[i][1]))){
+            uniqueArray.push(array[i])
+            set.add(array[i][1])
+          }
+        }
+      } else {
+        for (let i = 0; i < array.length; i++) {
+          if (!(set.has(array[i][0]))){
+            uniqueArray.push(array[i])
+            set.add(array[i][0])
+          }
+        }
+      }
+      return uniqueArray
+    }
+
   async function checkStatus(){
-    debugger
-    document.getElementById("canvas").addEventListener("click", clickHandler);
-    let winChance = false
+    document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
+    document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
+    var winChance = false
+    let match;
     for (let x = 0; x < 10; x++) {
+      match = [];
       for (let y = 0; y < 8; y++) {
-        match = [];
-        let callpaintx = false;
             if (balls[x][y].color === balls[x][y+1].color && balls[x][y].color === balls[x][y+2].color) {
               match.push([x,y]);
               match.push([x,y+1]);
               match.push([x,y+2]);
-              removeBalls(match,3);
-              winChance = true
             }
+          }
+          if (match.length >= 3) {
+            matchUnique = findUnique(match)
+            removeBalls(matchUnique,matchUnique.length);
+            winChance = true
           }
         }
 
     for (let y = 0; y < 10; y++) {
+      match = [];
       for (let x = 0; x < 8; x++) {
-        // match = [];
-        let callpainty = false;
-        if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
-          match.push([x,y]);
-          match.push([x+1,y]);
-          match.push([x+2,y]);
-          removeBalls(match,1);
+          if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
+            match.push([x,y]);
+            match.push([x+1,y]);
+            match.push([x+2,y]);
+          }
+        }
+        if (match.length >= 3) {
+          console.log("match",match)
+          matchUnique = findUnique(match)
+          console.log("matchuniq",matchUnique)
+          removeBalls(matchUnique,1);
           winChance = true
         }
-        }
       }
+
     if (winChance === false) {
       win()
     }
@@ -236,9 +283,13 @@ window.addEventListener("load", () => {
   let color1 = -1;
   let color2 = -1 ;
   let swapTurn;
+  var isDown = false;
+  var isDrag = false;
+  let prevX;
+  let prevY;
 
-
-  window.myClickHandler = clickHandler;
+  window.myDragStart = dragStart;
+  window.myDragEnd = dragEnd;
 
   function addBackground(x,y) {
     ctx.drawImage(circle, x*60, 100 + (y*60), 60,60);
@@ -249,10 +300,22 @@ window.addEventListener("load", () => {
     ctx.drawImage(rectangle, x*60, 100 + (y*60), 60,60);
   }
 
-  function clearBackground(cx1,cy1,cx2,cy2) {
-    ctx.clearRect(cx1*60, 100 + (cy1*60), 60,60);
-    ctx.clearRect(cx2*60, 100 + (cy2*60), 60,60);
+  function clearCanvas() {
+    ctx.clearRect(0,0,600,700);
     paint()
+  }
+
+  async function showElementmove(posx,posy,element,prevX,prevY){
+    clearCanvas()
+    var canvas = document.getElementById("canvas");
+    ctx = canvas.getContext("2d");
+    clearCanvasforDrag(x1,y1)
+    ctx.drawImage(circle, posx*60, 100 + (posy*60), 60,60);
+    ctx.drawImage(element,posx*60,posy*60 + 100, 60,60);
+  }
+
+  function clearCanvasforDrag(cx1,cy1) {
+    ctx.clearRect(cx1*60, 100 + (cy1*60), 60,60);
   }
 
   function sleep(ms) {
@@ -260,7 +323,6 @@ window.addEventListener("load", () => {
   }
 
   function displayHit(array){
-    debugger
     for (let i = 0; i < array.length; i++) {
       xpos = array[i][0]
       ypos = array[i][1]
@@ -268,47 +330,56 @@ window.addEventListener("load", () => {
       paint()
     }
   }
-  //
-  // function dragStart(e){
-  //   console.log("in drag start",e)
-  //   if (x1 === -1) {
-  //     x1 = Math.floor(e.offsetX/60);
-  //     y1 = Math.floor(e.offsetY/60)-2;
-  //     color1 = balls[x1][y1].color;;
-  //     addBackground(x1,y1);
-  //     paint();
-  //   }
-  //   console.log("x1")
-  // }
-  //
-  // function dragEnd(e){
-  //   console.log("in drag end",e)
-  // }
 
-  async function clickHandler(e) {
-    swapTurn = 1
-    debugger
+   function dragStart(e){
+    isDown = true
+    isDrag = false;
     playAudio(music1);
     if (x1 === -1) {
       x1 = Math.floor(e.offsetX/60);
       y1 = Math.floor(e.offsetY/60)-2;
       color1 = balls[x1][y1].color;;
       addBackground(x1,y1);
-    } else {
-      debugger
+    }
+  }
+
+  function dragEnd(e){
+    swapTurn = 1
+    isDown = false
+    if (x1 !== -1) {
       x2 = Math.floor(e.offsetX/60);
       y2 = Math.floor(e.offsetY/60)-2;
-      color2 = balls[x2][y2].color;
+
+      if (balls[x2][y2] === undefined) {
+        clearCanvas()
+      } else {
+          color2 = balls[x2][y2].color;
+      }
+
       let adjacent = checkAdjacent();
       if (adjacent) {
         swap(x1,y1,x2,y2,swapTurn);
-      } else {
-        clearBackground(x1,y1,x2,y2);
-        alert("Please select adjacent balls");
+      } else if(isDrag === true) {
+        clearCanvas();
+        playAudio(music6)
+      } else if(isDrag === false){
+        clearCanvas();
       }
-
       x1 = -1;
       y1 = -1;
+    }
+  }
+
+
+  function mousemove(e){
+    isDrag = true;
+    if (isDown === true) {
+      let posX = (e.offsetX-30)/60
+      let posY = ((e.offsetY-30)/60)-1.65;
+       prevX =  Math.floor(e.offsetX/60)
+       prevY = Math.floor(e.offsetY/60)-2
+      let element = imageList[balls[x1][y1].color]
+      showElementmove(posX, posY,element,prevX,prevY)
     }
   }
 
@@ -351,16 +422,17 @@ window.addEventListener("load", () => {
         if(!matchRow.includes([bx2,by2])) {
           matchRow.push([bx2,by2]);
         }
+
         let temp = balls[bx1][by1];
         balls[bx1][by1] = balls[bx2][by2];
         balls[bx2][by2] = temp;
         moves -= 1;
         yflag = false;
-        clearBackground(x1,y1,x2,y2);
+        clearCanvas();
         addBackground(x2,y2)
-        await sleep(400)
-        checkStatus()
-        // removeBalls(matchRow,1);
+        playAudio(music1);
+        await sleep(500)
+        removeBalls(matchRow,1);
       }
 
     //check in y coordinate
@@ -392,6 +464,7 @@ window.addEventListener("load", () => {
 
   if (matchColumn.length >= 2){
     canSwap = true;
+
     if(!matchColumn.includes([bx2,by2])) {
       matchColumn.push([bx2,by2]);
     }
@@ -399,26 +472,27 @@ window.addEventListener("load", () => {
     balls[bx1][by1] = balls[bx2][by2];
     balls[bx2][by2] = temp;
     moves -= 1;
-    clearBackground(x1,y1,x2,y2);
+    clearCanvas();
     addBackground(x2,y2)
-    await sleep(400)
-    checkStatus()
-    // removeBalls(matchColumn, matchColumn.length);
+    playAudio(music1);
+    await sleep(500)
+    removeBalls(matchColumn, matchColumn.length);
   }
   if (canSwap === false && turn === 1) {
     swap(x2,y2,x1,y1,2)
   } else if (canSwap === false && turn === 2){
-    alert("Cant be swapped.Please bring 3 same color balls together by swapping");
-    clearBackground(x1,y1,x2,y2);
+    playAudio(music6)
+    clearCanvas();
   }
 }
 
 async function removeBalls(array, slideCount){
-  document.getElementById("canvas").removeEventListener("click", window.myClickHandler);
-  clearBackground(x2,y2,x1,y1);
+  document.getElementById("canvas").removeEventListener("mousedown", window.myDragStart);
+  document.getElementById("canvas").removeEventListener("mouseup", window.myDragEnd);
+  clearCanvas();
   displayHit(array)
   playAudio(music5)
-  await sleep(1100)
+  await sleep(1300)
   let i = 0;
 
   while (i < array.length) {
@@ -427,7 +501,7 @@ async function removeBalls(array, slideCount){
     ctx.clearRect(array[i][0]*60, 100 + (array[i][1]*60), 60,60);
     i+=1 ;
   }
-    await sleep(600)
+    await sleep(800)
     score += array.length*10;
     paint(slideCount);
     playAudio(music4)
