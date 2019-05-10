@@ -201,31 +201,28 @@ window.addEventListener("load", () => {
   }
 
   function findUnique(array){
-      let set = new Set()
-      let uniqueArray = []
-      let i = 0
-      let flagX = false
-      let flagY = false
-        if (array[i][0] === array[i+1][0]) {
-          flagX = true
-        } else {
-          flagY = true
-        }
-      if (flagX === true) {
-        for (let i = 0; i < array.length; i++) {
-          if (!(set.has(array[i][1]))){
-            uniqueArray.push(array[i])
-            set.add(array[i][1])
-          }
-        }
-      } else {
-        for (let i = 0; i < array.length; i++) {
-          if (!(set.has(array[i][0]))){
-            uniqueArray.push(array[i])
-            set.add(array[i][0])
-          }
+    let set = new Set()
+    let uniqueArray = []
+    let i = 0
+    let flagX = false
+    if (array[i][0] === array[i+1][0]) {
+      flagX = true
+    }
+    if (flagX === true) {
+      for (let i = 0; i < array.length; i++) {
+        if (!(set.has(array[i][1]))){
+          uniqueArray.push(array[i])
+          set.add(array[i][1])
         }
       }
+    } else {
+      for (let i = 0; i < array.length; i++) {
+        if (!(set.has(array[i][0]))){
+          uniqueArray.push(array[i])
+          set.add(array[i][0])
+        }
+      }
+    }
       return uniqueArray
     }
 
@@ -245,7 +242,7 @@ window.addEventListener("load", () => {
           }
           if (match.length >= 3) {
             matchUnique = findUnique(match)
-            removeBalls(matchUnique,matchUnique.length);
+            await removeBalls(matchUnique,matchUnique.length);
             winChance = true
           }
         }
@@ -263,7 +260,7 @@ window.addEventListener("load", () => {
           console.log("match",match)
           matchUnique = findUnique(match)
           console.log("matchuniq",matchUnique)
-          removeBalls(matchUnique,1);
+          await removeBalls(matchUnique,1);
           winChance = true
         }
       }
