@@ -98,7 +98,6 @@ window.addEventListener("load", () => {
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, 600, 700);
     paint();
-    // document.getElementById("canvas").addEventListener("click", clickHandler);
     document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
     document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
     document.getElementById("canvas").addEventListener("mousemove", mousemove,false);
@@ -126,14 +125,35 @@ window.addEventListener("load", () => {
     return flag;
   }
 
-
-  function paint(deletedCount) {
-        // drawImage(image, x, y, width, height)
-    if (gameOver === true) return
+  function findDeletedCells(){
+    let myMap = new Map()
     for (let j = 0; j < 10; j++) {
       for (let k = 9; k > 0; k--) {
         // replace deleted balls with balls from top
         if (balls[j][k] === undefined) {
+            // playAudio(music2);
+          if (myMap.has(j)) {
+            let curVal = myMap.get(j)
+            newVal = curVal + 1
+            myMap.set(j,newVal)
+          } else {
+            myMap.set(j,1)
+          }
+        }
+
+      }
+    }
+    return myMap;
+  }
+
+  function slideBalls(){
+    let deletedCount;
+    let myMap = findDeletedCells()
+    for (let j = 0; j < 10; j++) {
+      for (let k = 9; k > 0; k--) {
+        // replace deleted balls with balls from top
+        if (balls[j][k] === undefined) {
+            deletedCount = myMap.get(j)
             // playAudio(music2);
           let tempStore = balls[j][k-deletedCount];
           balls[j][k] = tempStore;
@@ -141,7 +161,11 @@ window.addEventListener("load", () => {
         }
       }
     }
+    paint()
+  }
 
+
+  function paint() {
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 10; y++) {
           // create ballobjects in place of empty spaces
@@ -201,38 +225,32 @@ window.addEventListener("load", () => {
   }
 
   function findUnique(array){
-    let set = new Set()
+    let myMap = new Map();
+    let set;
     let uniqueArray = []
-    let i = 0
-    let flagX = false
-    if (array[i][0] === array[i+1][0]) {
-      flagX = true
-    }
-    if (flagX === true) {
       for (let i = 0; i < array.length; i++) {
-        if (!(set.has(array[i][1]))){
-          uniqueArray.push(array[i])
-          set.add(array[i][1])
+        if (myMap.has(array[i][0])) {
+          myMap.get(array[i][0]).add(array[i][1])
+        } else {
+          set = new Set()
+          myMap.set(array[i][0],set.add(array[i][1]))
         }
       }
-    } else {
-      for (let i = 0; i < array.length; i++) {
-        if (!(set.has(array[i][0]))){
-          uniqueArray.push(array[i])
-          set.add(array[i][0])
-        }
-      }
-    }
-      return uniqueArray
-    }
+    myMap.forEach(function(value, key) {
+      let set = myMap.get(key)
+      set.forEach(function(val){
+        uniqueArray.push([key,val])
+      })
+    })
+    return uniqueArray
+}
 
-  async function checkStatus(){
+  function checkStatus(){
     document.getElementById("canvas").addEventListener("mousedown", dragStart,false);
     document.getElementById("canvas").addEventListener("mouseup", dragEnd,false);
     var winChance = false
-    let match;
+    let match = [];
     for (let x = 0; x < 10; x++) {
-      match = [];
       for (let y = 0; y < 8; y++) {
             if (balls[x][y].color === balls[x][y+1].color && balls[x][y].color === balls[x][y+2].color) {
               match.push([x,y]);
@@ -240,15 +258,9 @@ window.addEventListener("load", () => {
               match.push([x,y+2]);
             }
           }
-          if (match.length >= 3) {
-            matchUnique = findUnique(match)
-            await removeBalls(matchUnique,matchUnique.length);
-            winChance = true
-          }
         }
 
     for (let y = 0; y < 10; y++) {
-      match = [];
       for (let x = 0; x < 8; x++) {
           if (balls[x][y].color === balls[x+1][y].color && balls[x][y].color === balls[x+2][y].color) {
             match.push([x,y]);
@@ -256,13 +268,11 @@ window.addEventListener("load", () => {
             match.push([x+2,y]);
           }
         }
-        if (match.length >= 3) {
-          console.log("match",match)
-          matchUnique = findUnique(match)
-          console.log("matchuniq",matchUnique)
-          await removeBalls(matchUnique,1);
-          winChance = true
-        }
+      }
+      if (match.length >= 3) {
+        matchUnique = findUnique(match)
+        removeBalls(matchUnique);
+        winChance = true
       }
 
     if (winChance === false) {
@@ -429,7 +439,8 @@ window.addEventListener("load", () => {
         addBackground(x2,y2)
         playAudio(music1);
         await sleep(500)
-        removeBalls(matchRow,1);
+        // removeBalls(matchRow,1);
+        checkStatus()
       }
 
     //check in y coordinate
@@ -473,7 +484,8 @@ window.addEventListener("load", () => {
     addBackground(x2,y2)
     playAudio(music1);
     await sleep(500)
-    removeBalls(matchColumn, matchColumn.length);
+    // removeBalls(matchColumn, matchColumn.length);
+    checkStatus()
   }
   if (canSwap === false && turn === 1) {
     swap(x2,y2,x1,y1,2)
@@ -483,7 +495,7 @@ window.addEventListener("load", () => {
   }
 }
 
-async function removeBalls(array, slideCount){
+async function removeBalls(array){
   document.getElementById("canvas").removeEventListener("mousedown", window.myDragStart);
   document.getElementById("canvas").removeEventListener("mouseup", window.myDragEnd);
   clearCanvas();
@@ -500,7 +512,7 @@ async function removeBalls(array, slideCount){
   }
     await sleep(800)
     score += array.length*10;
-    paint(slideCount);
+    slideBalls()
     playAudio(music4)
     await sleep(500)
     checkStatus()
