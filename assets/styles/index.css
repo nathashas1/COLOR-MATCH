@@ -9,8 +9,17 @@ html {
 }
 
 #canvas {
-  margin: 30px;
+  margin: 40px;
   border: 1px solid lightgrey;
+}
+
+.links{
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  color: #1778B5;
+  margin-left: 400px;
+  margin-top: 50px;
 }
 
 .maincontainer{
