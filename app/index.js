@@ -20,12 +20,18 @@ window.addEventListener("load", () => {
   function Ball(x,y) {
   }
 
+  function stopVideo(){
+        video.pause();
+        video.currentTime = 0;
+     }
+
   function hide() {
     const overlay = document.querySelector(".overlay-container");
     overlay.style.left = "100vw";
     overlay.style.opacity = 0;
     const main = document.querySelector(".maincontainer");
     main.style.width = "100%";
+    stopVideo()
   }
 
   function unhide() {
